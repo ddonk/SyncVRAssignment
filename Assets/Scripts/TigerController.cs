@@ -31,6 +31,15 @@ public class TigerController : MonoBehaviour
         {
             _spriteRenderer.sprite = _tigerSprites[0];
         }
+
+        if (_popupButton == null)
+        {
+            Debug.LogWarning($"Couldn't get button component on {gameObject.name}");
+        }
+        else
+        {
+            _popupButton.onClick.AddListener(HandleClick);
+        }
         
         timeRange = new RandomRange(2, 5);
         coorRange = new RandomRange(0.1f, 1);
@@ -89,6 +98,11 @@ public class TigerController : MonoBehaviour
         {
             return 1;
         }
+    }
+
+    private void HandleClick()
+    {
+        GameUIHandler.singleton.SetScore(1);
     }
 }
 
