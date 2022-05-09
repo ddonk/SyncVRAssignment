@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class TigerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
+
+    [SerializeField] private List<Sprite> _tigerSprites;
+
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Button _popupButton;
     private RandomRange timeRange;
     private RandomRange coorRange;
@@ -19,9 +23,19 @@ public class TigerController : MonoBehaviour
     
     private void Awake()
     {
+        if (!TryGetComponent(out _spriteRenderer))
+        {
+            Debug.LogWarning($"Couldn't get sprite renderer component on {gameObject.name}");
+        }
+        else
+        {
+            _spriteRenderer.sprite = _tigerSprites[0];
+        }
+        
         timeRange = new RandomRange(2, 5);
         coorRange = new RandomRange(0.1f, 1);
         popupRange = new RandomRange(4, 8);
+        
         StartCoroutine(UpdatePopUp());
         RandomMove();
     }
@@ -49,16 +63,17 @@ public class TigerController : MonoBehaviour
         {
             yield return new WaitForSeconds(timeRange.GetRandomNumber());
             _popupButton.interactable = true;
+            _spriteRenderer.sprite = _tigerSprites[1];
             direction = new Vector3(0, 0, 0);
             yield return new WaitForSeconds(popupRange.GetRandomNumber());
             _popupButton.interactable = false;
+            _spriteRenderer.sprite = _tigerSprites[0];
             RandomMove();
         }
     }
 
     private void RandomMove()
     {
-        Debug.Log("Testing Random Move");
         direction = new Vector2(coorRange.GetRandomNumber() * RandomDirection(), coorRange.GetRandomNumber() * RandomDirection());
     }
 
